@@ -16,6 +16,9 @@ public class Review {
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("Welcome back! we are in the labs branch");
+        
+        Person p = new Person("Daniel", "Oduwole",'A');
+        System.out.println(p.fullName());
     }
     
 }
