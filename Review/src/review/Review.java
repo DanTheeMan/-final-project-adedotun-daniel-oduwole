@@ -3,22 +3,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 package review;
-
+import java.util.Scanner;
 /**
  *
  * @author leoli
  */
 public class Review {
-
+    private Scanner input;
+    private BankAccount[] accounts;
+    private Customers[] customers;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        System.out.println("Welcome back! we are in the labs branch");
         
-        Person p = new Person("Daniel", "Oduwole",'A');
-        System.out.println(p.fullName());
+        // TODO code application logic here
+        
+        
+       
     }
     
 }
