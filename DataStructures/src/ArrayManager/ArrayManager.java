@@ -31,12 +31,16 @@ public class ArrayManager {
             count++;
         }
         else{
-            Object[] temp = new Object[items.length+10];
-            System.arraycopy(items, 0, temp, 0, count);
-            items=temp;
+            resize();
             items[count]=o;
             count++;
         }
+    }
+    
+    public void resize(){
+        Object[] temp = new Object[items.length+10];
+        System.arraycopy(items, 0, temp, 0, count);
+        items=temp;
     }
     
     public void print(){
@@ -51,5 +55,34 @@ public class ArrayManager {
             System.out.println(items[i]);
             
         }
+    }
+    public int size(){
+        return count;
+    }
+    
+    
+    
+    public boolean isEmpty(){
+        if(count == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    public void insertAt(Object o, int pos){
+       
+        //1. Resize if necessary
+        
+        if(count>=items.length){
+            resize();
+        }
+        //2. Create a space in the position [1,12,3,4,5] insert 66 at pos 2 [1,12,(blank),3,4,5]
+        System.arraycopy(items, pos, items, pos+1, count-pos);
+        //3. Add new item at blank position
+        items[pos]=o;
+        //4. make sure to count new item
+        count++;
     }
 }
