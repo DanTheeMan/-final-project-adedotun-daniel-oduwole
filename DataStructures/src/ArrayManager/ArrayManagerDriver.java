@@ -27,7 +27,7 @@ public class ArrayManagerDriver {
         am.print();
         System.out.println("----");
         am.insertAt(66, 2);
-        am.print();
+        am.print ();
         
 //        int [] items = new int[5];
 //        
