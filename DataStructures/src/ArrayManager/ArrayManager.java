@@ -71,7 +71,7 @@ public class ArrayManager {
         }
     }
     
-    public void insertAt(Object o, int pos){
+    public void insertAt(Object o, int pos ) throws OutofBoundsException{
        
         //1. Resize if necessary
         
