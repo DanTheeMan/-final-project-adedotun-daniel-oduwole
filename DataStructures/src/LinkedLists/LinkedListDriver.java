@@ -15,23 +15,32 @@ public class LinkedListDriver {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        LinkedList list = new LinkedList();
-        list.add("a");
-        list.add("b");
-        list.add("c");
-        list.add("d");
-        list.add("e");
-        list.print();
-        System.out.println(list.size());
-        System.out.println("----------------------------------------");
-        
-        list.start();
-        System.out.println("Current: " + list.getCurrent());
-        list.advance();
-        System.out.println("Current: " + list.getCurrent());
-        
-        
-        
+        ListNode a = new ListNode("Im a");
+        ListNode b = new ListNode("Im b");
+        ListNode c = new ListNode("Im c");
+        ListNode d = new ListNode("Im d");
+        ListNode e = new ListNode("Im e");
+
+        a.next = b;
+        b.next = c;
+        c.next = d;
+        d.next = e;
+
+        ListNode temp = a;
+        while (temp != null) {
+            System.out.println("Data: " + temp.getData());
+            temp = temp.next;
+        }
+
+        ListNode f = new ListNode("Im an intruder");
+        f.next = d;
+        c.next = f;
+        System.out.println("---------------------------");
+        temp = a;
+        while (temp != null) {
+            System.out.println("Data: " + temp.getData());
+            temp = temp.next;
+        }
+
     }
-    
 }
