@@ -3,7 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 package ArrayManager;
-
+import exceptions.NoItemsException;
+import exceptions.OutOfBoundsException;
 /**
  *
  * @author leoli

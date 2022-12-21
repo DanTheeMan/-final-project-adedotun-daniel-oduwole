@@ -12,4 +12,8 @@ public class NoItemsException extends Exception{
     public NoItemsException(String s){
         super(s);
     }
+    
+    public NoItemsException(){
+        
+    }
 }
