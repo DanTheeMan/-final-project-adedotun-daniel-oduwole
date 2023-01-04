@@ -19,6 +19,15 @@ public class LinkedList {
     public LinkedList(){
         
     }
+    private void recursivePrint(ListNode temp){
+        if(temp==null){
+            return;
+        }
+        else{
+            System.out.println(temp.getData());
+            recursivePrint(temp.next);
+        }
+    }
 
     public Object getCurrent(){
         return current.getData();
