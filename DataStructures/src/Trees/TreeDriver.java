@@ -18,20 +18,23 @@ public class TreeDriver {
         Tree t = new Tree();
         Scanner input = new Scanner(System.in);
         
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 10; i++) {
             int num=(int)(Math.random()*200);
             System.out.println(num+ " ");
             t.add(num);
         }
+        System.out.println("max: " + t.findMax());
+        
         System.out.println("\nPrintTree: ");
         t.printTree();
+        
         
         System.out.println("Search for: ");
         int n = input.nextInt();
         Object o = t.searchTree(n);
         
         if(o!=null){
-            System.out.println("Found: " + o + "After" + t.searchCount + "calls");
+            System.out.println("Found: " + o + " After" + t.searchCount + " calls");
         }
         else{
             System.out.println("not found after " + t.searchCount + " calls");

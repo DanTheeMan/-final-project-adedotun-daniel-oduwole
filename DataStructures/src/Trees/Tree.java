@@ -15,6 +15,21 @@ public class Tree {
     public Tree() {
 
     }
+    public int findMax() {
+    return findMax(root);
+  }
+
+  private int findMax(TreeNode node) {
+    if (node == null) {
+      return Integer.MIN_VALUE;
+    }
+    int max = (Integer)node.data;
+    max = Math.max(max, findMax(node.left));
+    max = Math.max(max, findMax(node.right));
+    return max;
+  }
+    
+    
 
     public void add(Object o, TreeNode temp) {
         Comparable c = (Comparable) o;
@@ -67,6 +82,8 @@ public class Tree {
         printTree(root);
     }
     
+    
+    
     public Object searchTree(TreeNode temp, Object o){
         searchCount++;
         Comparable c=(Comparable)o;
@@ -91,4 +108,6 @@ public class Tree {
     public Object searchTree(Object o){      
         return searchTree(root, o);
     }
+    
 }
+
