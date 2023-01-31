@@ -113,22 +113,22 @@ public class ChatClient extends AbstractClient
     		catch(IOException e) {};
       		
       	}
-      	
-      	if(message.indexOf("#setHost")>0){
+      	//#setHost 192.168.0.1
+      	if(message.indexOf("#setHost")>=0){
       		
       		if(isConnected())
       			clientUI.display("Cannot change host while connected");
       		else
-      			setHost( message.substring(8, message.length()) );
+      			setHost( message.substring(8, message.length()).trim() );
       		
       	}
-      	
-      	if(message.indexOf("#setPort")>0){
+      	//#setPort12345
+      	if(message.indexOf("#setPort")>=0){
       		
       		if(isConnected())
       			clientUI.display("Cannot change port while connected");
       		else
-      			setPort( Integer.parseInt(message.substring(8, message.length()) ));
+      			setPort( Integer.parseInt(message.substring(8, message.length()).trim() ));
       		
       	}
       	

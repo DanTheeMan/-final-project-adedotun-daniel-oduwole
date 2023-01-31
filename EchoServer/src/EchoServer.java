@@ -115,7 +115,9 @@ public class EchoServer extends AbstractServer
   	
   	}
   
-  
+  synchronized protected void clientException(){
+      
+  }
 
   
 }
