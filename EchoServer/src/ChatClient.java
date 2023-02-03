@@ -142,6 +142,23 @@ public class ChatClient extends AbstractClient {
                 clientUI.display("failed to join a room");
             }
         }
+        //pm Nick message
+        if(message.indexOf("#pm")==0){
+            try {
+                // nick message
+                String targetAndMessage = message.substring(3,message.length()).trim();
+                //nick
+                String target = targetAndMessage.substring(0,targetAndMessage.indexOf(" ")).trim();
+                //message
+                String pm = targetAndMessage.substring(targetAndMessage.indexOf(" "), message.length()).trim();
+                
+                Envelope env = new Envelope("pm",target,pm);
+                this.sendToServer(env);
+            } catch (IOException e) {
+                clientUI.display("could not private message user");
+            }
+            
+        }
 
     }
 

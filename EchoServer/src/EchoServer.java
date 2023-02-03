@@ -75,6 +75,13 @@ public class EchoServer extends AbstractServer {
             String roomName = env.getContents().toString();
             client.setInfo("room", roomName);
         }
+        
+        if(env.getId().equals("pm")){
+            String target = env.getArg();
+            String message = env.getContents().toString();
+            sendToAClient(message, target,client);
+            
+        }
 
     }
 
@@ -89,6 +96,22 @@ public class EchoServer extends AbstractServer {
                     target.sendToClient(msg);
                 } catch (Exception ex) {
                     System.out.println("failed to send to client");
+                }
+            }
+        }
+    }
+    
+    public void sendToAClient(Object msg,String pmTarget, ConnectionToClient client) {
+        Thread[] clientThreadList = getClientConnections();
+        String room = client.getInfo("room").toString();
+
+        for (int i = 0; i < clientThreadList.length; i++) {
+            ConnectionToClient target = (ConnectionToClient) clientThreadList[i];
+            if (target.getInfo("userId").equals(pmTarget)) {
+                try {
+                    target.sendToClient(msg);
+                } catch (Exception ex) {
+                    System.out.println("failed to send private message");
                 }
             }
         }
