@@ -1,4 +1,6 @@
 
+import java.util.Set;
+
 public class EchoServer extends AbstractServer {
     //Class variables *************************************************
 
@@ -33,21 +35,62 @@ public class EchoServer extends AbstractServer {
      * @param client The connection from which the message originated.
      */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
+        System.out.println(msg);
         if (msg instanceof Envelope) {
             Envelope env = (Envelope) msg;
+            System.out.println(env.getId());
+            System.out.println(env.getContents().toString());
             handleCommandFromClient(env, client);
         } else {
             System.out.println("Message received: " + msg + " from " + client);
-            String userId = client.getInfo("userId").toString();
-            this.sendToAllClients(userId+ ": " +msg);
+
+            if (client.getInfo("room") == null) {
+                client.setInfo("room", "lobby");
+
+            }
+            String userId;
+            if (client.getInfo("userId") == null) {
+                client.setInfo("userId", "guest");
+                userId = client.getInfo("userId").toString();
+
+            } else {
+                userId = client.getInfo("userId").toString();
+
+            }
+
+            this.sendToAllClientsInRoom(userId + ": " + msg, client);
         }
 
     }
 
     public void handleCommandFromClient(Envelope env, ConnectionToClient client) {
+
         if (env.getId().equals("login")) {
             String userId = env.getContents().toString();
             client.setInfo("userId", userId);
+            client.setInfo("room", "lobby");
+
+        }
+        if (env.getId().equals("join")) {
+            String roomName = env.getContents().toString();
+            client.setInfo("room", roomName);
+        }
+
+    }
+
+    public void sendToAllClientsInRoom(Object msg, ConnectionToClient client) {
+        Thread[] clientThreadList = getClientConnections();
+        String room = client.getInfo("room").toString();
+
+        for (int i = 0; i < clientThreadList.length; i++) {
+            ConnectionToClient target = (ConnectionToClient) clientThreadList[i];
+            if (target.getInfo(room).equals(room)) {
+                try {
+                    target.sendToClient(msg);
+                } catch (Exception ex) {
+                    System.out.println("failed to send to client");
+                }
+            }
         }
     }
 

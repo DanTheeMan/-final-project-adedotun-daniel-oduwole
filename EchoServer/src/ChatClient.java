@@ -115,7 +115,7 @@ public class ChatClient extends AbstractClient {
         }
 
         //#Login username
-        if (message.indexOf("#login") == 0) {
+        if (message.indexOf("#login") >= 0) {
 
             if (isConnected()) {
                 clientUI.display("already connected");
@@ -130,6 +130,16 @@ public class ChatClient extends AbstractClient {
                 } catch (IOException e) {
                     clientUI.display("failed to connect to server.");
                 }
+            }
+        }
+        //#join lobby
+        if(message.indexOf("#join")==0){
+            try {
+                String roomName = message.substring(5,message.length()).trim();
+                Envelope env = new Envelope("join", "",roomName);
+                this.sendToServer(env);
+            } catch (IOException e) {
+                clientUI.display("failed to join a room");
             }
         }
 
