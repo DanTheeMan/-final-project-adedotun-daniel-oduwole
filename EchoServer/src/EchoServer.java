@@ -70,6 +70,13 @@ public class EchoServer extends AbstractServer {
             sendToAClient(message, target,client);
             
         }
+        if(env.getId().equals("#yell")){
+            
+            String message = env.getContents().toString();
+            String userId = client.getInfo("userId").toString();
+            this.sendToAllClients(userId+ "yells: "+ message);
+            
+        }
 
     }
 
@@ -91,13 +98,14 @@ public class EchoServer extends AbstractServer {
     
     public void sendToAClient(Object msg,String pmTarget, ConnectionToClient client) {
         Thread[] clientThreadList = getClientConnections();
+        String userId = client.getInfo("userId").toString();
         String room = client.getInfo("room").toString();
 
         for (int i = 0; i < clientThreadList.length; i++) {
             ConnectionToClient target = (ConnectionToClient) clientThreadList[i];
             if (target.getInfo("userId").equals(pmTarget)) {
                 try {
-                    target.sendToClient(msg);
+                    target.sendToClient(userId + ": "+msg);
                 } catch (Exception ex) {
                     System.out.println("failed to send private message");
                 }
@@ -152,11 +160,13 @@ public class EchoServer extends AbstractServer {
     protected void clientConnected(ConnectionToClient client) {
 
         System.out.println("<Client Connected:" + client + ">");
+        client.setInfo("room","lobby");
+        client.setInfo("userId", "guest");
 
     }
 
     synchronized protected void clientException() {
-        System.out.println("conecyf");
+        System.out.println("Client shutdown");
     }
 
 }

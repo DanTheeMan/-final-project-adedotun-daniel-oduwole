@@ -159,7 +159,23 @@ public class ChatClient extends AbstractClient {
             }
             
         }
+        //#yell OH MY GOD IM FREAKING OUT
+        if (message.indexOf("#yell")==0){
+            
+            try{
+                String yellMessage = message.substring(5,message.length()).trim();
+            Envelope env = new Envelope("yell","",yellMessage);
+            this.sendToServer(env);
+            }catch(IOException e){
+                System.out.println("failed to yell");
+            }
+            
+        }
 
+    }
+    
+    protected void connectionException(Exception exception){
+        clientUI.display("Server has shutdown");
     }
 
 }
