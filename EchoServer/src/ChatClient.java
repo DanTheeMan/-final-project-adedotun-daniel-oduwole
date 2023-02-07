@@ -150,7 +150,7 @@ public class ChatClient extends AbstractClient {
                 //nick
                 String target = targetAndMessage.substring(0,targetAndMessage.indexOf(" ")).trim();
                 //message
-                String pm = targetAndMessage.substring(targetAndMessage.indexOf(" "), message.length()).trim();
+                String pm = targetAndMessage.substring(targetAndMessage.indexOf(" "), targetAndMessage.length()).trim();
                 
                 Envelope env = new Envelope("pm",target,pm);
                 this.sendToServer(env);

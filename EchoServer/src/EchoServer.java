@@ -44,19 +44,7 @@ public class EchoServer extends AbstractServer {
         } else {
             System.out.println("Message received: " + msg + " from " + client);
 
-            if (client.getInfo("room") == null) {
-                client.setInfo("room", "lobby");
-
-            }
-            String userId;
-            if (client.getInfo("userId") == null) {
-                client.setInfo("userId", "guest");
-                userId = client.getInfo("userId").toString();
-
-            } else {
-                userId = client.getInfo("userId").toString();
-
-            }
+            String userId = client.getInfo("userId").toString();
 
             this.sendToAllClientsInRoom(userId + ": " + msg, client);
         }
