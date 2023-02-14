@@ -73,7 +73,7 @@ public class EchoServer extends AbstractServer {
             
             String message = env.getContents().toString();
             String userId = client.getInfo("userId").toString();
-            this.sendToAllClients(userId+ "yells: "+ message);
+            this.sendToAllClients(userId+ " yells: "+ message);
             
         }
         if(env.getId().equals("who")){
