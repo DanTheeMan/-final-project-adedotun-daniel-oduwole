@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 import java.io.*;
 
 /**
@@ -36,8 +36,28 @@ public class ChatClient extends AbstractClient {
      * @param msg The message from the server.
      */
     public void handleMessageFromServer(Object msg) {
+        if(msg instanceof Envelope){
+            Envelope env = (Envelope)msg;
+            handleCommandFromServer(env);
+        }
+        else{
+            
+        }
         clientUI.display(msg.toString());
     }
+    
+    public void handleCommandFromServer(Envelope env){
+        if(env.getId().equals("who")){
+            ArrayList<String> userList = (ArrayList<String>)env.getContents();
+            String room = env.getArg();
+            clientUI.display("Users in " + room);
+            for (String s : userList) {
+                clientUI.display(s);
+            }
+        }
+    
+    }
+        
 
     /**
      * This method handles all data coming from the UI
@@ -115,18 +135,20 @@ public class ChatClient extends AbstractClient {
         }
 
         //#Login username
-        if (message.indexOf("#login") >= 0) {
+        // #login username
+        if (message.indexOf("#login") == 0) {
 
             if (isConnected()) {
                 clientUI.display("already connected");
             } else {
 
                 try {
-
                     openConnection();
-                    String username = message.substring(6,message.length()).trim();
-                    Envelope env = new Envelope("Login", "",username);
+                    String userName = message.substring(6, message.length()).trim();
+
+                    Envelope env = new Envelope("login", "", userName);
                     this.sendToServer(env);
+
                 } catch (IOException e) {
                     clientUI.display("failed to connect to server.");
                 }
@@ -168,6 +190,16 @@ public class ChatClient extends AbstractClient {
             this.sendToServer(env);
             }catch(IOException e){
                 System.out.println("failed to yell");
+            }
+            
+        }
+        
+        if(message.equals("#who")){
+            try {
+                Envelope env = new Envelope("who", "","");
+                this.sendToServer(env);
+            } catch (Exception e) {
+                clientUI.display("failed to aquire user list");
             }
             
         }

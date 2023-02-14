@@ -1,6 +1,5 @@
 
-import java.util.Set;
-
+import java.util.ArrayList;
 public class EchoServer extends AbstractServer {
     //Class variables *************************************************
 
@@ -70,14 +69,42 @@ public class EchoServer extends AbstractServer {
             sendToAClient(message, target,client);
             
         }
-        if(env.getId().equals("#yell")){
+        if(env.getId().equals("yell")){
             
             String message = env.getContents().toString();
             String userId = client.getInfo("userId").toString();
             this.sendToAllClients(userId+ "yells: "+ message);
             
         }
+        if(env.getId().equals("who")){
+            sendRoomListToClient(client);
+            
+        }
 
+    }
+    
+    public void sendRoomListToClient (ConnectionToClient client){
+        Envelope env = new Envelope();
+        env.setId("who");
+        ArrayList<String> userList = new ArrayList<String>();
+        String room = client.getInfo("room").toString();
+        env.setArg(room);
+        
+        Thread[] clientThreadList = getClientConnections();
+        for (int i = 0; i < clientThreadList.length; i++) {
+            ConnectionToClient target = (ConnectionToClient)clientThreadList[i];
+            if(target.getInfo("room").equals(room)){
+                userList.add(target.getInfo("userId").toString());
+            }
+        }
+        
+        env.setContents(userList);
+        
+        try {
+            client.sendToClient(env);
+        } catch (Exception e) {
+            System.out.println("failed to send userlist to client");
+        }
     }
 
     public void sendToAllClientsInRoom(Object msg, ConnectionToClient client) {
@@ -86,7 +113,7 @@ public class EchoServer extends AbstractServer {
 
         for (int i = 0; i < clientThreadList.length; i++) {
             ConnectionToClient target = (ConnectionToClient) clientThreadList[i];
-            if (target.getInfo(room).equals(room)) {
+            if (target.getInfo("room").equals(room)) {
                 try {
                     target.sendToClient(msg);
                 } catch (Exception ex) {
