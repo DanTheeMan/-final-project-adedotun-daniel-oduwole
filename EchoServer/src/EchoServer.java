@@ -25,6 +25,14 @@ public class EchoServer extends AbstractServer {
         }
 
     }
+    
+    public EchoServer(){
+        
+    }
+
+//    EchoServer(int port, ServerConsole aThis) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
 
     //Instance methods ************************************************
     /**
@@ -196,5 +204,6 @@ public class EchoServer extends AbstractServer {
         System.out.println("Client shutdown");
     }
 
+    
 }
 //End of EchoServer class
