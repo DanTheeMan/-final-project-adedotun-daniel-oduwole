@@ -7,15 +7,15 @@ import java.io.InputStreamReader;
 public class ServerConsole implements ChatIF {
 
     // Class variables
-    final public static int DEFAULT_PORT = 5555;
+    final public static int DEFAULT_PORT = 2222;
 
     // Instance variables
     EchoServer server;
 
     // Constructors
-    public ServerConsole(int port) {
+    public ServerConsole() {
         try {
-            server = new EchoServer(port);
+            server = new EchoServer();
         } catch (Exception e) {
             System.out.println("Error: Can't setup connection on port " + port + "!");
             System.exit(1);
@@ -49,7 +49,7 @@ public class ServerConsole implements ChatIF {
                 } else if (message.equals("#stop")) {
                     server.stopListening();
                 } else if (message.equals("#quit")) {
-//                    server.quit();
+                    System.exit(1);
                 } else {
                     server.sendToAllClients("<ADMIN>" + message);
                 }
@@ -64,18 +64,8 @@ public class ServerConsole implements ChatIF {
     }
 
     public static void main(String[] args) {
-        int port = DEFAULT_PORT;
 
-        try {
-            port = Integer.parseInt(args[0]);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // no command line argument, use default port
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid port number.");
-            System.exit(1);
-        }
-
-        ServerConsole console = new ServerConsole(port);
+        ServerConsole console = new ServerConsole();
         console.accept();
     }
 }

@@ -6,7 +6,7 @@ public class EchoServer extends AbstractServer {
     /**
      * The default port to listen on.
      */
-    final public static int DEFAULT_PORT = 5555;
+     public static int DEFAULT_PORT = 2222;
 
     //Constructors ****************************************************
     /**
@@ -14,21 +14,25 @@ public class EchoServer extends AbstractServer {
      *
      * @param port The port number to connect on.
      */
+    
+    
+    public EchoServer() {
+
+        super(DEFAULT_PORT);
+
+    }
+
     public EchoServer(int port) {
-
         super(port);
-
+        
         try {
             this.listen(); //Start listening for connections
         } catch (Exception ex) {
             System.out.println("ERROR - Could not listen for clients!");
         }
-
     }
     
-    public EchoServer(){
-        
-    }
+    
 
 //    EchoServer(int port, ServerConsole aThis) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -89,6 +93,10 @@ public class EchoServer extends AbstractServer {
             
         }
 
+    }
+    
+    public void setPort(){
+        
     }
     
     public void sendRoomListToClient (ConnectionToClient client){
