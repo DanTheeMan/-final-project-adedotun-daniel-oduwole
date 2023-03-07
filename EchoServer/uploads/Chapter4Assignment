@@ -1,0 +1,201 @@
+Chapter  4 Hand in assignnment
+
+Chapter.4A) Creating a new directory
+
+adedotun@Adedotun:~$ ls
+Desktop    Downloads  Pictures  snap       Videos
+Documents  Music      Public    Templates
+adedotun@Adedotun:~$ mkdir directory...
+adedotun@Adedotun:~$ ls
+Desktop       Documents  Music     Public  Templates
+directory...  Downloads  Pictures  snap    Videos
+adedotun@Adedotun:~$ cd Documents
+adedotun@Adedotun:~/Documents$ mkdir dir1 dir2 dir3
+adedotun@Adedotun:~/Documents$ ls
+dir1  dir2  dir3
+adedotun@Adedotun:~/Documents$ 
+
+
+Chapter.4B) coping a folder and its files to another folder.
+
+adedotun@Adedotun:~/Documents$ ls
+dir1  dir2  dir3
+adedotun@Adedotun:~/Documents$ cp -a dir1 dir2
+adedotun@Adedotun:~/Documents$ ls
+dir1  dir2  dir3
+adedotun@Adedotun:~/Documents$ cd dir2
+adedotun@Adedotun:~/Documents/dir2$ ls
+dir1
+adedotun@Adedotun:~/Documents/dir2$ 
+
+
+Chapter.4C) moving files to another location
+
+adedotun@Adedotun:~/Documents/dir2$ mv dir1 ~/Documents/dir3
+adedotun@Adedotun:~/Documents/dir2$ ls
+adedotun@Adedotun:~/Documents/dir2$ cd ..
+adedotun@Adedotun:~/Documents$ cd dir3
+adedotun@Adedotun:~/Documents/dir3$ ls
+dir1
+adedotun@Adedotun:~/Documents/dir3$ cd ..
+adedotun@Adedotun:~/Documents$ 
+
+Chapter.4D) removing a file from a location
+
+adedotun@Adedotun:~/Documents$ cd dir3
+adedotun@Adedotun:~/Documents/dir3$ cd dir1
+adedotun@Adedotun:~/Documents/dir3/dir1$ ls
+demofile
+adedotun@Adedotun:~/Documents/dir3/dir1$ rm demofile
+adedotun@Adedotun:~/Documents/dir3/dir1$ ls
+adedotun@Adedotun:~/Documents/dir3/dir1$ cd ..
+adedotun@Adedotun:~/Documents/dir3$ cd ..
+adedotun@Adedotun:~/Documents$ 
+
+Chapter.4E) Playground - Creating directories 
+
+adedotun@Adedotun:~$ ls
+Desktop       Documents  Music     Public  Templates
+directory...  Downloads  Pictures  snap    Videos
+adedotun@Adedotun:~$ cd
+adedotun@Adedotun:~$ mkdir playground
+adedotun@Adedotun:~$ ls
+Desktop       Documents  Music     playground  snap       Videos
+directory...  Downloads  Pictures  Public      Templates
+adedotun@Adedotun:~$ cd playground
+adedotun@Adedotun:~/playground$ mkdir dir1 dir2
+adedotun@Adedotun:~/playground$ ls
+dir1  dir2
+adedotun@Adedotun:~/playground$ cp /etc/passwrd .
+cp: cannot stat '/etc/passwrd': No such file or directory
+adedotun@Adedotun:~/playground$ cp /etc/passwd .
+adedotun@Adedotun:~/playground$ ls
+dir1  dir2  passwd
+adedotun@Adedotun:~/playground$ ls -l
+total 12
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:11 dir1
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:11 dir2
+-rw-r--r-- 1 adedotun adedotun 2864 Nov 21 23:12 passwd
+adedotun@Adedotun:~/playground$ cp -v /etc/passwd .
+'/etc/passwd' -> './passwd'
+adedotun@Adedotun:~/playground$ cp -i /etc/passwd .
+cp: overwrite './passwd'? y
+adedotun@Adedotun:~/playground$ 
+
+
+Chapter.4E) Playground - Moving and renaming files
+ 
+ adedotun@Adedotun:~/playground$ mv passwd fun
+adedotun@Adedotun:~/playground$ ls
+dir1  dir2  fun
+adedotun@Adedotun:~/playground$ mv fun dir1
+adedotun@Adedotun:~/playground$ mv dir1/fun dir2
+adedotun@Adedotun:~/playground$ mv dir2/fim .
+adedotun@Adedotun:~/playground$ mv dir2/fun .
+adedotun@Adedotun:~/playground$ ls
+dir1  dir2  fun
+adedotun@Adedotun:~/playground$ mv fun dir1
+adedotun@Adedotun:~/playground$ mv dir1 dir2
+adedotun@Adedotun:~/playground$ ls -l dir2
+total 4
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:18 dir1
+adedotun@Adedotun:~/playground$ ls -l dir2/dir1
+total 4
+-rw-r--r-- 1 adedotun adedotun 2864 Nov 21 23:14 fun
+adedotun@Adedotun:~/playground$ mv dir2/dir1 .
+adedotun@Adedotun:~/playground$ mv dir1/fun .
+adedotun@Adedotun:~/playground$ ls
+dir1  dir2  fun
+
+
+Chapter.4E) Playground - Creating Hard Links
+
+adedotun@Adedotun:~/playground$ ln fun fun-hard
+adedotun@Adedotun:~/playground$ ln fun dir1/fun-hard
+adedotun@Adedotun:~/playground$ ln fun dir2/fun-hard
+adedotun@Adedotun:~/playground$ ls -l
+total 16
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:23 dir1
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:23 dir2
+-rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun
+-rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun-hard
+adedotun@Adedotun:~/playground$ ls -li
+total 16
+131096 drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:23 dir1
+131097 drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:23 dir2
+131109 -rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun
+131109 -rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun-hard
+adedotun@Adedotun:~/playground$ 
+
+Chapter.4E) Playground - Creating Symbolic Links
+
+adedotun@Adedotun:~/playground$ ln -s fun fun-sym
+adedotun@Adedotun:~/playground$ ln -s ../fun dir1/fun-sym
+adedotun@Adedotun:~/playground$ ln -s ../fun dir2/fun-sym
+adedotun@Adedotun:~/playground$ ls -l dir1
+total 4
+-rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun-hard
+lrwxrwxrwx 1 adedotun adedotun    6 Nov 21 23:26 fun-sym -> ../fun
+adedotun@Adedotun:~/playground$ ln -s /home/me/playground/fun dir1/fun-sym
+ln: failed to create symbolic link 'dir1/fun-sym': File exists
+adedotun@Adedotun:~/playground$ ln -s dir1 dir1-sym
+adedotun@Adedotun:~/playground$ ls -l
+total 16
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:26 dir1
+lrwxrwxrwx 1 adedotun adedotun    4 Nov 21 23:29 dir1-sym -> dir1
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:27 dir2
+-rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun
+-rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun-hard
+lrwxrwxrwx 1 adedotun adedotun    3 Nov 21 23:26 fun-sym -> fun
+adedotun@Adedotun:~/playground$ 
+
+Chapter.4E) Playground - Removing files and directories
+
+adedotun@Adedotun:~/playground$ ln -s fun fun-sym
+adedotun@Adedotun:~/playground$ ln -s ../fun dir1/fun-sym
+adedotun@Adedotun:~/playground$ ln -s ../fun dir2/fun-sym
+adedotun@Adedotun:~/playground$ ls -l dir1
+total 4
+-rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun-hard
+lrwxrwxrwx 1 adedotun adedotun    6 Nov 21 23:26 fun-sym -> ../fun
+adedotun@Adedotun:~/playground$ ln -s /home/me/playground/fun dir1/fun-sym
+ln: failed to create symbolic link 'dir1/fun-sym': File exists
+adedotun@Adedotun:~/playground$ ln -s dir1 dir1-sym
+adedotun@Adedotun:~/playground$ ls -l
+total 16
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:26 dir1
+lrwxrwxrwx 1 adedotun adedotun    4 Nov 21 23:29 dir1-sym -> dir1
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:27 dir2
+-rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun
+-rw-r--r-- 4 adedotun adedotun 2864 Nov 21 23:14 fun-hard
+lrwxrwxrwx 1 adedotun adedotun    3 Nov 21 23:26 fun-sym -> fun
+adedotun@Adedotun:~/playground$ rm fun-hard
+adedotun@Adedotun:~/playground$ ls -l
+total 12
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:26 dir1
+lrwxrwxrwx 1 adedotun adedotun    4 Nov 21 23:29 dir1-sym -> dir1
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:27 dir2
+-rw-r--r-- 3 adedotun adedotun 2864 Nov 21 23:14 fun
+lrwxrwxrwx 1 adedotun adedotun    3 Nov 21 23:26 fun-sym -> fun
+adedotun@Adedotun:~/playground$ rm -i fun
+rm: remove regular file 'fun'? y
+adedotun@Adedotun:~/playground$ ls -l
+total 8
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:26 dir1
+lrwxrwxrwx 1 adedotun adedotun    4 Nov 21 23:29 dir1-sym -> dir1
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:27 dir2
+lrwxrwxrwx 1 adedotun adedotun    3 Nov 21 23:26 fun-sym -> fun
+adedotun@Adedotun:~/playground$ less fun-sym
+fun-sym: No such file or directory
+adedotun@Adedotun:~/playground$ rm fun-sym dir1-sym
+adedotun@Adedotun:~/playground$ ls -l
+total 8
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:26 dir1
+drwxrwxr-x 2 adedotun adedotun 4096 Nov 21 23:27 dir2
+adedotun@Adedotun:~/playground$ cd
+adedotun@Adedotun:~$ rm -r playground
+adedotun@Adedotun:~$ ls
+Desktop       Documents  Music     Public  Templates
+directory...  Downloads  Pictures  snap    Videos
+adedotun@Adedotun:~$ 
+

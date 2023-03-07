@@ -1,12 +1,20 @@
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+
 public class EchoServer extends AbstractServer {
     //Class variables *************************************************
 
     /**
      * The default port to listen on.
      */
-     final public static int DEFAULT_PORT = 5555;
+    final public static int DEFAULT_PORT = 5555;
 
     //Constructors ****************************************************
     /**
@@ -14,8 +22,6 @@ public class EchoServer extends AbstractServer {
      *
      * @param port The port number to connect on.
      */
-    
-    
     public EchoServer() {
 
         super(DEFAULT_PORT);
@@ -24,20 +30,17 @@ public class EchoServer extends AbstractServer {
 
     public EchoServer(int port) {
         super(port);
-        
+
         try {
             this.listen(); //Start listening for connections
         } catch (Exception ex) {
             System.out.println("ERROR - Could not listen for clients!");
         }
     }
-    
-    
 
 //    EchoServer(int port, ServerConsole aThis) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 //    }
-
     //Instance methods ************************************************
     /**
      * This method handles any messages received from the client.
@@ -74,48 +77,96 @@ public class EchoServer extends AbstractServer {
             String roomName = env.getContents().toString();
             client.setInfo("room", roomName);
         }
-        
-        if(env.getId().equals("pm")){
+
+        if (env.getId().equals("pm")) {
             String target = env.getArg();
             String message = env.getContents().toString();
-            sendToAClient(message, target,client);
-            
+            sendToAClient(message, target, client);
+
         }
-        if(env.getId().equals("yell")){
-            
+        if (env.getId().equals("yell")) {
+
             String message = env.getContents().toString();
             String userId = client.getInfo("userId").toString();
-            this.sendToAllClients(userId+ " yells: "+ message);
-            
+            this.sendToAllClients(userId + " yells: " + message);
+
         }
-        if(env.getId().equals("who")){
+        if (env.getId().equals("who")) {
             sendRoomListToClient(client);
-            
+
+        }
+        if (env.getId().equals("ftpUpload")) {
+            try {
+                String fileName = env.getArg();
+                byte[] fileBytes = (byte[]) env.getContents();
+                Path filePath = Paths.get("uploads", fileName);
+                Files.write(filePath, fileBytes);
+                System.out.println("File " + fileName + " saved to " + filePath.toAbsolutePath().toString());
+                // Update the file list combo box
+                
+            } catch (IOException e) {
+                System.err.println("Error saving file " + env.getArg() + ": " + e.getMessage());
+            }
         }
 
+        if (env.getId().equals("#ftplist")) {
+            String[] fileList = (String[]) env.getContents();
+            
+        }
+        if (env.getId().equals("ftpget")) {
+            String fileName = env.getArg();
+            String filePath = "files/" + fileName;
+
+            File fileToSend = new File(filePath);
+            if (fileToSend.isFile()) {
+                try {
+                    client.sendToClient(new Envelope("ftpget", fileName, Files.readAllBytes(fileToSend.toPath())));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
-    
-    public void setPort(){
-        
+
+    private void sendFileListToClient(ConnectionToClient client) {
+        File folder = new File("ftp");
+        File[] listOfFiles = folder.listFiles();
+        String[] fileNames = new String[listOfFiles.length];
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                fileNames[i] = listOfFiles[i].getName();
+            }
+        }
+        Envelope env = new Envelope("ftplist", "", fileNames);
+        try {
+            client.sendToClient(env);
+        } catch (IOException e) {
+            System.out.println("Failed to send file list to client.");
+            e.printStackTrace();
+        }
     }
-    
-    public void sendRoomListToClient (ConnectionToClient client){
+
+    public void setPort() {
+
+    }
+
+    public void sendRoomListToClient(ConnectionToClient client) {
         Envelope env = new Envelope();
         env.setId("who");
         ArrayList<String> userList = new ArrayList<String>();
         String room = client.getInfo("room").toString();
         env.setArg(room);
-        
+
         Thread[] clientThreadList = getClientConnections();
         for (int i = 0; i < clientThreadList.length; i++) {
-            ConnectionToClient target = (ConnectionToClient)clientThreadList[i];
-            if(target.getInfo("room").equals(room)){
+            ConnectionToClient target = (ConnectionToClient) clientThreadList[i];
+            if (target.getInfo("room").equals(room)) {
                 userList.add(target.getInfo("userId").toString());
             }
         }
-        
+
         env.setContents(userList);
-        
+
         try {
             client.sendToClient(env);
         } catch (Exception e) {
@@ -137,9 +188,20 @@ public class EchoServer extends AbstractServer {
                 }
             }
         }
+        File[] files = new File("uploads").listFiles();
+        List<String> fileList = new ArrayList<>();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    fileList.add(file.getName());
+                }
+            }
+        }
+        Envelope env = new Envelope("update_list", "", fileList);
+        sendToAllClients(env);
     }
-    
-    public void sendToAClient(Object msg,String pmTarget, ConnectionToClient client) {
+
+    public void sendToAClient(Object msg, String pmTarget, ConnectionToClient client) {
         Thread[] clientThreadList = getClientConnections();
         String userId = client.getInfo("userId").toString();
         String room = client.getInfo("room").toString();
@@ -148,7 +210,7 @@ public class EchoServer extends AbstractServer {
             ConnectionToClient target = (ConnectionToClient) clientThreadList[i];
             if (target.getInfo("userId").equals(pmTarget)) {
                 try {
-                    target.sendToClient(userId + ": "+msg);
+                    target.sendToClient(userId + ": " + msg);
                 } catch (Exception ex) {
                     System.out.println("failed to send private message");
                 }
@@ -203,7 +265,7 @@ public class EchoServer extends AbstractServer {
     protected void clientConnected(ConnectionToClient client) {
 
         System.out.println("<Client Connected:" + client + ">");
-        client.setInfo("room","lobby");
+        client.setInfo("room", "lobby");
         client.setInfo("userId", "guest");
 
     }
@@ -212,6 +274,5 @@ public class EchoServer extends AbstractServer {
         System.out.println("Client shutdown");
     }
 
-    
 }
 //End of EchoServer class

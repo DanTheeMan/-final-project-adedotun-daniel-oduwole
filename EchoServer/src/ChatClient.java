@@ -1,5 +1,11 @@
+
 import java.util.ArrayList;
 import java.io.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.swing.JComboBox;
 
 /**
  * This class overrides some of the methods defined in the abstract superclass
@@ -36,35 +42,107 @@ public class ChatClient extends AbstractClient {
      * @param msg The message from the server.
      */
     public void handleMessageFromServer(Object msg) {
-        if(msg instanceof Envelope){
-            Envelope env = (Envelope)msg;
+
+        if (msg instanceof Envelope) {
+            Envelope env = (Envelope) msg;
+            String command = env.getId();
+            if (command.equals("ftpget")) {
+                byte[] fileContent = (byte[]) env.getContents();
+                String filename = env.getArg();
+                Path filePath = Paths.get("downloads/" + filename);
+                try {
+                    Files.write(filePath, fileContent);
+                    System.out.println("File " + filename + " downloaded successfully");
+                } catch (IOException e) {
+                    System.err.println("Error writing file " + filename + " to disk: " + e.getMessage());
+                }
+            }
             handleCommandFromServer(env);
+        } else {
+
         }
-        else{
-            
-        }
+
         clientUI.display(msg.toString());
     }
-    
-    public void handleCommandFromServer(Envelope env){
-        if(env.getId().equals("who")){
-            ArrayList<String> userList = (ArrayList<String>)env.getContents();
+
+   
+
+    public void handleCommandFromServer(Envelope env) {
+        if (env.getId().equals("#ftpUpload")) {
+            String fileName = env.getArg();
+            byte[] fileContents = (byte[]) env.getContents();
+            Path path = Paths.get("C:\\Users\\leoli\\uploads");
+            try {
+                if (!Files.exists(path)) {
+                    Files.createDirectory(path);
+                    System.out.println("Created uploads directory");
+                }
+            } catch (IOException ex) {
+                System.err.println("Error creating directory: " + ex.getMessage());
+            }
+            Path filePath = Paths.get("C:\\Users\\leoli\\uploads", fileName);
+            try {
+                Files.write(filePath, fileContents);
+                System.out.println("File saved: " + fileName);
+                env = new Envelope("#ftpList", fileName, fileContents);
+                handleCommandFromServer(env);
+            } catch (IOException ex) {
+                System.err.println("Error saving file: " + ex.getMessage());
+            }
+
+        }
+        
+        if (env.getId().equals("#ftpget")) {
+            String fileName = env.getArg();
+            byte[] fileContents = (byte[]) env.getContents();
+            Path path = Paths.get("C:\\Users\\leoli\\Downloads");
+            
+            Path filePath = Paths.get("C:\\Users\\leoli\\Downloads", fileName);
+            try {
+                Files.write(filePath, fileContents);
+                System.out.println("File downloaded: " + fileName);
+            } catch (IOException ex) {
+                System.err.println("Error saving file: " + ex.getMessage());
+            }
+
+        }
+        if (env.getId().equals("#ftplist")) {
+            GUIConsole c = new GUIConsole();
+            ArrayList<Envelope> envelopeList = new ArrayList<>();
+            Path path = Paths.get("C:\\Users\\leoli\\uploads");
+            try {
+                if (!Files.exists(path)) {
+                    Files.createDirectory(path);
+                    System.out.println("Created uploads directory");
+                }
+                DirectoryStream<Path> stream = Files.newDirectoryStream(path);
+                for (Path file : stream) {
+                    envelopeList.add(env);
+                    c.updateFileListDropdown(env);
+                }
+
+            } catch (IOException ex) {
+                System.err.println("Error listing files: " + ex.getMessage());
+            }
+
+        }
+        if (env.getId().equals("who")) {
+            ArrayList<String> userList = (ArrayList<String>) env.getContents();
             String room = env.getArg();
             clientUI.display("Users in " + room);
             for (String s : userList) {
                 clientUI.display(s);
             }
         }
-    
+
     }
-        
 
     /**
      * This method handles all data coming from the UI
      *
      * @param message The message from the UI.
      */
-    public void handleMessageFromClientUI(String message) {
+    public void handleMessageFromClientUI(String message) throws IOException {
 
         if (message.charAt(0) == '#') {
 
@@ -97,7 +175,7 @@ public class ChatClient extends AbstractClient {
 
     }
 
-    public void handleClientCommand(String message) {
+    public void handleClientCommand(String message) throws IOException {
 
         if (message.equals("#quit")) {
             clientUI.display("Shutting Down Client");
@@ -155,58 +233,93 @@ public class ChatClient extends AbstractClient {
             }
         }
         //#join lobby
-        if(message.indexOf("#join")==0){
+        if (message.indexOf("#join") == 0) {
             try {
-                String roomName = message.substring(5,message.length()).trim();
-                Envelope env = new Envelope("join", "",roomName);
+                String roomName = message.substring(5, message.length()).trim();
+                Envelope env = new Envelope("join", "", roomName);
                 this.sendToServer(env);
             } catch (IOException e) {
                 clientUI.display("failed to join a room");
             }
         }
         //pm Nick message
-        if(message.indexOf("#pm")==0){
+        if (message.indexOf("#pm") == 0) {
             try {
                 // nick message
-                String targetAndMessage = message.substring(3,message.length()).trim();
+                String targetAndMessage = message.substring(3, message.length()).trim();
                 //nick
-                String target = targetAndMessage.substring(0,targetAndMessage.indexOf(" ")).trim();
+                String target = targetAndMessage.substring(0, targetAndMessage.indexOf(" ")).trim();
                 //message
                 String pm = targetAndMessage.substring(targetAndMessage.indexOf(" "), targetAndMessage.length()).trim();
-                
-                Envelope env = new Envelope("pm",target,pm);
+
+                Envelope env = new Envelope("pm", target, pm);
                 this.sendToServer(env);
             } catch (IOException e) {
                 clientUI.display("could not private message user");
             }
-            
+
         }
         //#yell OH MY GOD IM FREAKING OUT
-        if (message.indexOf("#yell")==0){
-            
-            try{
-                String yellMessage = message.substring(5,message.length()).trim();
-            Envelope env = new Envelope("yell","",yellMessage);
-            this.sendToServer(env);
-            }catch(IOException e){
+        if (message.indexOf("#yell") == 0) {
+
+            try {
+                String yellMessage = message.substring(5, message.length()).trim();
+                Envelope env = new Envelope("yell", "", yellMessage);
+                this.sendToServer(env);
+            } catch (IOException e) {
                 System.out.println("failed to yell");
             }
-            
+
         }
-        
-        if(message.equals("#who")){
+
+        if (message.equals("#who")) {
             try {
-                Envelope env = new Envelope("who", "","");
+                Envelope env = new Envelope("who", "", "");
                 this.sendToServer(env);
             } catch (Exception e) {
                 clientUI.display("failed to aquire user list");
             }
-            
+
+        }
+        if (message.indexOf("#ftpupload") == 0) {
+            Envelope env = new Envelope();
+            env.setId("ftpUpload");
+            String fileName = message.split(" ")[1];
+            byte[] fileBytes = (byte[]) env.getContents();
+            try {
+                File uploadsDir = new File("uploads");
+                if (!uploadsDir.exists()) {
+                    uploadsDir.mkdir();
+                }
+                File file = new File(uploadsDir.getPath() + "/" + fileName);
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                fileOutputStream.write(fileBytes);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+                clientUI.display("File " + fileName + " saved successfully in uploads folder");
+            } catch (IOException e) {
+                clientUI.display("Error saving file " + fileName);
+            }
+        }
+
+        if (message.indexOf("#ftpget") == 0) {
+            String fileName = message.split(" ")[1];
+            Envelope env = new Envelope();
+            env.setId("ftpGet");
+            env.setContents(fileName);
+            this.sendToServer(env);
+        }
+
+        //#ftplist
+        if (message.equals("#ftplist")) {
+            Envelope env = new Envelope();
+            env.setId("ftpList");
+            this.sendToServer(env);
         }
 
     }
-    
-    protected void connectionException(Exception exception){
+
+    protected void connectionException(Exception exception) {
         clientUI.display("Server has shutdown");
     }
 

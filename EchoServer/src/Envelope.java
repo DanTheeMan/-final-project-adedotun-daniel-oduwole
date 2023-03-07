@@ -24,6 +24,12 @@ public class Envelope implements Serializable{
         this.arg = arg;
         this.contents = contents;
     }
+    
+    public Envelope(String id, String arg, byte [] contents) {
+        this.id = id;
+        this.arg = arg;
+        this.contents = contents;
+    }
 
     public String getId() {
         return id;
